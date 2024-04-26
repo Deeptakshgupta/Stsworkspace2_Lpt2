@@ -1,0 +1,89 @@
+package com.citi.WebConfiguratorService.model.o2ms;
+
+import java.sql.Date;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
+import com.citi.WebConfiguratorService.model.wcs.Customer;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Entity
+@Table(schema="o2ms", name="REPORT_WORK_TABLE")
+@NoArgsConstructor 
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Reports{
+	
+	/*
+	 * private long id;
+	 */
+	
+	
+	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "repoSeq")
+	@SequenceGenerator(sequenceName = "report_seq", allocationSize = 1, name = "repoSeq")
+	//@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID", nullable = false)
+	private Long id;
+	
+	@Id
+	@Column(name = "REPORTNAME", nullable = false, unique=true)
+	private String reportName;
+	
+	@Column(name = "VERSION", nullable = false)
+	private String version;
+	
+	@Column(name = "AUTHOR", nullable = false)
+	private String author;
+	
+	@Column(name = "CREATIONDATE", nullable = false)
+	private Date creationDate;
+	
+	@Column(name = "TYPE", nullable = false)
+	private String type;
+	
+	@Column(name = "DESCRIPTION", nullable = false)
+	private String description;
+	
+	@Column(name = "REPORTXML", columnDefinition = "BLOB",nullable = false)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+	private byte[] reportXML;
+	
+	@Column(name = "CREATEDBYID", nullable = false)
+	private String createdById;
+	
+//	@Column(name = "IMAGEPATH", columnDefinition = "BLOB",nullable = false)
+//	@Lob
+//	@Basic(fetch = FetchType.LAZY)
+//	private byte[] imagePath;
+	
+	
+//	@ManyToOne(fetch = FetchType.LAZY,targetEntity=Customer.class)
+//    @JoinColumn(name = "CREATEDBYID", referencedColumnName = "customerId") 
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="customerId")
+//    private Customer customer;
+	
+	 @Transient
+	 private String message;
+	
+}

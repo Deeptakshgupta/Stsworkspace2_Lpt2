@@ -1,0 +1,21 @@
+package com.citi.WebConfiguratorService.O2msRpository;
+
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.citi.WebConfiguratorService.model.o2ms.Reports;
+
+public interface ReportWorkTableRepository extends JpaRepository<Reports, Long>{
+
+	public Reports findByReportName(String reportName);
+	
+	@Query(value ="select * from REPORT_WORK_TABLE wc1 "
+			+ "where wc1.CREATEDBYID like ?1 escape '\\' ",nativeQuery=true)
+	List<Reports> getReportResultList(String customeId);
+	
+	public Reports deleteByReportName(String reportName);
+	
+}

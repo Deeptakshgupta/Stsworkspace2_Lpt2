@@ -1,0 +1,102 @@
+/*
+ * Created by : Hamid Raza Siddiqui
+ * Date : 17/04/2023
+ * 
+ * Fix 1.0.0
+ * 		Date : 23/05/2023
+ * 		Context : Added unique constraint to name with @ID mapping at entity level.
+ * */
+
+package com.citi.WebConfiguratorService.model.o2ms;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
+import org.springframework.data.domain.Pageable;
+
+import com.citi.WebConfiguratorService.model.wcs.Customer;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(schema="o2ms", name="COMPONENTMAST")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Components {
+    
+	@Column(name = "COMPONENTID")
+	private long componentId;
+	
+	@Id
+	@Column(name = "COMPONENTNAME", nullable = false)
+	private String componentName;
+	
+	@Column(name = "VERSION", nullable = false)
+	private String version;
+	
+	@Column(name = "CATEGORYID", nullable = false)
+	private long categoryId;
+	
+	@Column(name = "AUTHOR", nullable = false)
+	private String author;
+	
+//	@Column(name = "customer_name")
+//	private LocalDateTime creationDate;
+	
+	@Column(name = "DESCRIPTION", nullable = false)
+	private String description;
+	
+	
+	@Column(name = "ISPUBLISHED", nullable = false)
+	private String isPublished;
+	
+	@Column(name = "CREATEDBYID", nullable = false)
+	private String createdById;
+	
+	@Column(name = "IMAGEPATH", columnDefinition = "BLOB",nullable = false)
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+    private byte[]  imagePath;
+    
+    @Column(name = "COMPONENTXML", columnDefinition = "BLOB",nullable = false)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[]  componentXml;
+    
+//    @ManyToOne(fetch = FetchType.LAZY,targetEntity=Customer.class)
+//    @JoinColumn(name = "CREATEDBYID", referencedColumnName = "customerId") 
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="customerId")
+//    private Customer customer;
+    
+    @Transient
+    private Pageable Pageable;
+    @Transient
+    private Long TotalElements;
+    @Transient
+    private int TotalPage;
+    @Transient
+    private int noOfElements;
+    @Transient
+    private int pageNumber;
+    @Transient
+    private int pageSize;
+    @Transient
+    private Long offset;
+    @Transient
+    private String message;
+}

@@ -1,0 +1,51 @@
+package com.citi.WebConfiguratorService.DatasourceConfig;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+@Configuration
+@EnableJpaRepositories(
+entityManagerFactoryRef = "o2msEntityMgrFactory", 
+transactionManagerRef = "o2msTransactionMgr", 
+basePackages = "com.citi.WebConfiguratorService.O2msRpository")
+@EnableTransactionManagement
+public class O2msSchemaConfig {
+	@Bean(name = "datasourceo2ms")
+	@ConfigurationProperties(prefix = "spring.datasource.o2ms")
+	public DataSource dataSource() {
+		return DataSourceBuilder.create().build();
+	}
+
+	@Bean(name = "o2msEntityMgrFactory")
+	public LocalContainerEntityManagerFactoryBean o2msEntityMgrFactory(final EntityManagerFactoryBuilder builder,
+			@Qualifier("datasourceo2ms") final DataSource dataSource) {
+		final Map<String, String> properties = new HashMap<>();
+		properties.put("hibernate.physical_naming_strategy",
+				"org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy");
+		return builder.dataSource(dataSource)
+				.properties(properties)
+				.packages("com.citi.WebConfiguratorService.model.o2ms")
+				.persistenceUnit("o2ms").build();
+	}
+
+	@Bean(name = "o2msTransactionMgr")
+	public PlatformTransactionManager o2msTransactionMgr(
+			@Qualifier("o2msEntityMgrFactory") final EntityManagerFactory entityManagerFactory) {
+		return new JpaTransactionManager(entityManagerFactory);
+	}
+}
